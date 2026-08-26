@@ -31,7 +31,7 @@
       height: 100vh;
       background-color: var(--bg-main);
       color: var(--text-main);
-      overflow: hidden; /* Mencegah body utama ikut scroll */
+      overflow: hidden;
     }
 
     /* Sidebar Navigation */
@@ -93,24 +93,24 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
-      overflow: hidden; /* Mengunci overflow di container utama agar scroll khusus di area konten */
+      overflow: hidden;
       width: 100%;
     }
 
     /* Header & Month Filter */
     header {
+      background-color: var(--bg-card);
       background-image: url('https://github.com/krisnadiberry/DASHBOARD-UP3-FBT/raw/refs/heads/main/background_header.svg');
-      background-size: cover;
-      background-position: center;
       background-repeat: no-repeat;
+      background-position: left center;
+      background-size: auto 85%;
       padding: 14px 32px;
-      border-bottom: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
       gap: 12px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.02);
       flex-shrink: 0;
-      z-index: 100; /* Menjaga header selalu di atas konten saat di-scroll */
+      z-index: 100;
     }
 
     .header-top {
@@ -120,8 +120,10 @@
       width: 100%;
     }
 
-    .header-logo-left {
-      height: 36px;
+    /* Menyamakan tinggi kedua logo */
+    .header-logo-left,
+    .header-logo-right {
+      height: 34px;
       object-fit: contain;
     }
 
@@ -134,29 +136,29 @@
       flex: 1;
     }
 
-    .header-logo-right {
-      height: 36px;
-      object-fit: contain;
-    }
-
     .header-bottom {
       display: flex;
       justify-content: space-between;
       align-items: center;
       width: 100%;
       padding-top: 4px;
-      border-top: 1px solid rgba(241, 245, 249, 0.6);
+      /* Garis transparan dihilangkan dengan menghapus border-top */
     }
 
     .toggle-btn {
       background-color: var(--primary);
       color: white;
       border: none;
-      padding: 6px 10px;
-      font-size: 1rem;
+      padding: 5px 10px;
+      font-size: 0.85rem;
       border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.2s, transform 0.1s;
+      font-weight: 600;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .toggle-btn:hover {
@@ -171,12 +173,12 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(248, 250, 252, 0.9);
+      background: #f8fafc;
       padding: 6px 12px;
       border-radius: 8px;
       border: 1px solid var(--border-color);
       box-shadow: inset 0 1px 2px rgba(0,0,0,0.01);
-      backdrop-filter: blur(4px);
+      height: 34px;
     }
 
     .filter-container label {
@@ -200,7 +202,7 @@
     .content-area {
       padding: 28px;
       flex: 1;
-      overflow-y: auto; /* Membuat area ini saja yang bisa digulir ke bawah */
+      overflow-y: auto;
     }
 
     /* Page Views Management */
@@ -520,16 +522,19 @@
   <main class="main-content">
     <header>
       <div class="header-top">
-        <!-- Logo Danantara menggunakan link yang diberikan -->
+        <!-- Logo Danantara di sisi kiri atas -->
         <img src="https://github.com/krisnadiberry/DASHBOARD-UP3-FBT/raw/refs/heads/main/Danantara_Logo.svg" alt="Logo Danantara" class="header-logo-left">
+        
         <h1 id="page-title">📊 KINERJA UP3 FBT</h1>
-        <!-- Logo PLN menggunakan link yang diberikan -->
+        
+        <!-- Logo PLN di sisi kanan atas -->
         <img src="https://github.com/krisnadiberry/DASHBOARD-UP3-FBT/raw/refs/heads/main/PLN_Logo.svg" alt="Logo PLN" class="header-logo-right">
       </div>
       
       <div class="header-bottom">
+        <!-- Tombol Menu -->
         <button class="toggle-btn" onclick="toggleSidebar()">☰ Menu</button>
-        
+
         <!-- Filter Bulan -->
         <div class="filter-container">
           <label for="monthFilter">Pilih Bulan:</label>
