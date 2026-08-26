@@ -17,6 +17,7 @@
       height: 100vh;
       background-color: #f0f2f5;
       color: #333;
+      overflow: hidden;
     }
 
     /* Sidebar Navigation */
@@ -27,6 +28,13 @@
       display: flex;
       flex-direction: column;
       padding: 20px 0;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    /* Class untuk menyembunyikan Sidebar */
+    .sidebar.collapsed {
+      margin-left: -240px;
     }
 
     .sidebar h2 {
@@ -62,6 +70,7 @@
       display: flex;
       flex-direction: column;
       overflow-y: auto;
+      width: 100%;
     }
 
     /* Header & Month Filter */
@@ -72,6 +81,28 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* Tombol Toggle Sidebar */
+    .toggle-btn {
+      background-color: #0284c7;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      font-size: 1.1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .toggle-btn:hover {
+      background-color: #0369a1;
     }
 
     header h1 {
@@ -147,7 +178,7 @@
       color: #64748b;
       margin-bottom: 8px;
       text-transform: uppercase;
-      height: 32px; /* Menjaga keseragaman tinggi judul */
+      height: 32px;
     }
 
     .card .value-group {
@@ -205,7 +236,7 @@
 <body>
 
   <!-- Sidebar Menu -->
-  <aside class="sidebar">
+  <aside class="sidebar" id="sidebar">
     <h2>KINERJA UP3 FBT</h2>
     <ul>
       <li><a href="#" class="active" onclick="openTab(event, 'overview')">📊 Overview Utama</a></li>
@@ -217,7 +248,10 @@
   <!-- Main View -->
   <main class="main-content">
     <header>
-      <h1 id="page-title">Dashboard Utama</h1>
+      <div class="header-left">
+        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+        <h1 id="page-title">Dashboard Utama</h1>
+      </div>
       
       <!-- Filter Bulan -->
       <div class="filter-container">
@@ -243,7 +277,6 @@
 
       <!-- 5 Block KPI Utama -->
       <div class="cards-grid">
-        <!-- 1. Penjualan -->
         <div class="card" style="border-left-color: #0284c7;">
           <h3>1. Penjualan Tenaga Listrik</h3>
           <div class="value-group">
@@ -253,7 +286,6 @@
           <div class="subtext" id="target-penjualan">Target: 6.00 GWh</div>
         </div>
 
-        <!-- 2. Susut -->
         <div class="card" style="border-left-color: #eab308;">
           <h3>2. Susut Distribusi</h3>
           <div class="value-group">
@@ -263,7 +295,6 @@
           <div class="subtext" id="target-susut">Target: 6.65 %</div>
         </div>
 
-        <!-- 3. SAIDI -->
         <div class="card" style="border-left-color: #22c55e;">
           <h3>3. SAIDI Realisasi</h3>
           <div class="value-group">
@@ -273,7 +304,6 @@
           <div class="subtext" id="target-saidi">Target Maks: 49.91 Jam</div>
         </div>
 
-        <!-- 4. SAIFI -->
         <div class="card" style="border-left-color: #8b5cf6;">
           <h3>4. SAIFI Realisasi</h3>
           <div class="value-group">
@@ -283,7 +313,6 @@
           <div class="subtext" id="target-saifi">Target Maks: 0.93 Kali</div>
         </div>
 
-        <!-- 5. ENS -->
         <div class="card" style="border-left-color: #ef4444;">
           <h3>5. ENS Realisasi</h3>
           <div class="value-group">
@@ -317,7 +346,6 @@
   </main>
 
   <script>
-    // Data Kinerja 1 s/d 5 diambil langsung dari Google Sheets Anda
     const dataKinerja = {
       JAN: {
         penjualan: { real: 0.58, target: 1.02, unit: "GWh" },
@@ -370,37 +398,37 @@
       }
     };
 
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("collapsed");
+    }
+
     function updateDashboard() {
       const selectedMonth = document.getElementById("monthFilter").value;
       const data = dataKinerja[selectedMonth];
 
       if (!data) return;
 
-      // 1. Penjualan Tenaga Listrik
       const pctPenjualan = ((data.penjualan.real / data.penjualan.target) * 100).toFixed(1);
       document.getElementById("val-penjualan").innerText = `${data.penjualan.real} ${data.penjualan.unit}`;
       document.getElementById("pct-penjualan").innerText = `${pctPenjualan}%`;
       document.getElementById("target-penjualan").innerText = `Target: ${data.penjualan.target} ${data.penjualan.unit}`;
 
-      // 2. Susut Distribusi
       const pctSusut = ((data.susut.target / data.susut.real) * 100).toFixed(1);
       document.getElementById("val-susut").innerText = `${data.susut.real} ${data.susut.unit}`;
       document.getElementById("pct-susut").innerText = `${pctSusut}%`;
       document.getElementById("target-susut").innerText = `Target: ${data.susut.target} ${data.susut.unit}`;
 
-      // 3. SAIDI
       const pctSaidi = ((data.saidi.target / data.saidi.real) * 100).toFixed(1);
       document.getElementById("val-saidi").innerText = `${data.saidi.real} ${data.saidi.unit}`;
       document.getElementById("pct-saidi").innerText = `${pctSaidi}%`;
       document.getElementById("target-saidi").innerText = `Target Maks: ${data.saidi.target} ${data.saidi.unit}`;
 
-      // 4. SAIFI
       const pctSaifi = ((data.saifi.target / data.saifi.real) * 100).toFixed(1);
       document.getElementById("val-saifi").innerText = `${data.saifi.real} ${data.saifi.unit}`;
       document.getElementById("pct-saifi").innerText = `${pctSaifi}%`;
       document.getElementById("target-saifi").innerText = `Target Maks: ${data.saifi.target} ${data.saifi.unit}`;
 
-      // 5. ENS
       const pctEns = ((data.ens.target / data.ens.real) * 100).toFixed(1);
       document.getElementById("val-ens").innerText = `${data.ens.real} ${data.ens.unit}`;
       document.getElementById("pct-ens").innerText = `${pctEns}%`;
@@ -421,7 +449,6 @@
       document.getElementById("page-title").innerText = evt.currentTarget.innerText.replace(/[^a-zA-Z0-9& ]/g, '').trim();
     }
 
-    // Eksekusi kalkulasi pertama kali
     updateDashboard();
   </script>
 </body>
