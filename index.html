@@ -4,45 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UP3 FBT TANCAP GAS</title>
+  <!-- Pustaka Chart.js untuk Grafik -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
+    :root {
+      --primary: #0084be;
+      --primary-dark: #006699;
+      --accent: #38bdf8;
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --sidebar-bg: #0f172a;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     body {
       display: flex;
       height: 100vh;
-      background-color: #f0f2f5;
-      color: #333;
+      background-color: var(--bg-main);
+      color: var(--text-main);
       overflow: hidden;
     }
 
     /* Sidebar Navigation */
     .sidebar {
-      width: 240px;
-      background-color: #1e293b;
+      width: 260px;
+      background-color: var(--sidebar-bg);
       color: #fff;
       display: flex;
       flex-direction: column;
-      padding: 20px 0;
-      transition: all 0.3s ease;
+      padding: 24px 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       flex-shrink: 0;
+      box-shadow: 4px 0 10px rgba(0,0,0,0.05);
+      z-index: 10;
     }
 
     .sidebar.collapsed {
-      margin-left: -240px;
+      margin-left: -260px;
     }
 
     .sidebar h2 {
       text-align: center;
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      color: #38bdf8;
-      padding: 0 10px;
-      line-height: 1.3;
+      font-size: 1.15rem;
+      margin-bottom: 35px;
+      color: var(--accent);
+      padding: 0 16px;
+      line-height: 1.4;
+      letter-spacing: 0.5px;
     }
 
     .sidebar ul {
@@ -50,19 +67,24 @@
     }
 
     .sidebar li a {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 12px;
       padding: 14px 24px;
       color: #94a3b8;
       text-decoration: none;
       font-weight: 500;
-      transition: all 0.3s;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
       cursor: pointer;
+      border-left: 4px solid transparent;
     }
 
     .sidebar li a:hover,
     .sidebar li a.active {
-      background-color: #00a2e8;
+      background-color: rgba(0, 162, 232, 0.1);
       color: #fff;
+      border-left-color: var(--accent);
     }
 
     /* Main Content Area */
@@ -76,38 +98,45 @@
 
     /* Header & Month Filter */
     header {
-      background-color: #ffffff;
-      padding: 15px 30px;
-      border-bottom: 1px solid #e2e8f0;
+      background-color: var(--bg-card);
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 16px;
     }
 
     .toggle-btn {
-      background-color: #00a2e8;
+      background-color: var(--primary);
       color: white;
       border: none;
       padding: 8px 12px;
       font-size: 1.1rem;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background-color 0.2s, transform 0.1s;
     }
 
     .toggle-btn:hover {
-      background-color: #0084be;
+      background-color: var(--primary-dark);
+    }
+
+    .toggle-btn:active {
+      transform: scale(0.95);
     }
 
     header h1 {
-      font-size: 1.4rem;
-      color: #0f172a;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
     }
 
     .filter-container {
@@ -115,90 +144,115 @@
       align-items: center;
       gap: 10px;
       background: #f8fafc;
-      padding: 6px 12px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.01);
     }
 
     .filter-container label {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      color: #475569;
+      color: var(--text-muted);
     }
 
     .filter-container select {
       padding: 6px 12px;
-      border-radius: 4px;
-      border: 1px solid #94a3b8;
-      font-weight: bold;
-      color: #0f172a;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      font-weight: 600;
+      color: var(--text-main);
       outline: none;
       cursor: pointer;
-      max-width: 350px;
+      background: white;
+      font-size: 0.9rem;
     }
 
     .content-area {
-      padding: 24px;
+      padding: 28px;
+    }
+
+    /* Page Views Management */
+    .page-view {
+      display: none;
+    }
+    .page-view.active-page {
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* Zone & Section Block Header Styles */
     .zone-header {
-      padding: 12px 16px;
-      border-radius: 6px;
+      padding: 14px 20px;
+      border-radius: 10px;
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .zone-header h2 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: 1.5px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
       text-transform: uppercase;
     }
 
     .zone-header-pln {
-      background-color: #00a2e8;
+      background: linear-gradient(135deg, var(--primary) 0%, #00a2e8 100%);
       color: #ffffff;
-      border: 1px solid #0084be;
-      box-shadow: 0 2px 4px rgba(0, 162, 232, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 132, 190, 0.2);
     }
 
     /* Standard Card Component */
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
     }
 
     .card {
-      background: #fff;
-      padding: 16px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      border-left: 4px solid #00a2e8;
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -2px rgba(0,0,0,0.02);
+      border: 1px solid var(--border-color);
+      border-left: 5px solid var(--primary);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
     }
 
     .card.yellow-border { border-left-color: #eab308; }
     .card.red-border { border-left-color: #ef4444; }
 
     .card .category-tag {
-      font-size: 0.7rem;
-      color: #64748b;
-      font-weight: bold;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .card h3 {
-      font-size: 0.85rem;
-      color: #0f172a;
-      margin-bottom: 12px;
-      min-height: 32px;
+      font-size: 0.82rem;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      min-height: 36px;
       text-transform: uppercase;
+      line-height: 1.3;
+      font-weight: 700;
     }
 
     .card .value-group {
@@ -209,26 +263,30 @@
     }
 
     .card .value {
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: #0f172a;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
     }
 
     .card .percentage {
-      font-size: 0.85rem;
-      font-weight: bold;
-      padding: 3px 8px;
-      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
     }
 
-    .bg-green { background-color: #dcfce7; color: #15803d; }
-    .bg-yellow { background-color: #fef9c3; color: #a16207; }
-    .bg-red { background-color: #fee2e2; color: #b91c1c; }
+    .bg-green { background-color: #dcfce7; color: #166534; }
+    .bg-yellow { background-color: #fef9c3; color: #854d0e; }
+    .bg-red { background-color: #fee2e2; color: #991b1b; }
 
     .card .subtext {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed var(--border-color);
+      font-weight: 500;
     }
 
     /* Dual Grid Layout */
@@ -236,7 +294,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
-      margin-bottom: 30px;
+      margin-bottom: 32px;
     }
 
     @media (max-width: 900px) {
@@ -246,35 +304,38 @@
     }
 
     .status-column {
-      background: #ffffff;
-      padding: 16px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+      border: 1px solid var(--border-color);
     }
 
     .underperforming-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 12px;
+      gap: 16px;
     }
 
     .empty-card-msg {
-      padding: 16px;
+      padding: 24px;
       text-align: center;
-      color: #64748b;
+      color: var(--text-muted);
       font-size: 0.85rem;
       background: #f8fafc;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px dashed #cbd5e1;
+      font-weight: 500;
     }
 
-    /* Section Detail Kinerja Spesifik - Full Width Responsive Grid */
+    /* Section Detail Kinerja Spesifik */
     .detail-section {
-      background: #ffffff;
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      border-top: 4px solid #00a2e8;
+      background: var(--bg-card);
+      padding: 28px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+      border: 1px solid var(--border-color);
+      border-top: 5px solid var(--primary);
       width: 100%;
     }
 
@@ -282,54 +343,54 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       flex-wrap: wrap;
       gap: 16px;
     }
 
     .detail-header h2 {
       font-size: 1.1rem;
-      color: #0f172a;
+      color: var(--text-main);
       letter-spacing: 0.5px;
+      font-weight: 700;
     }
 
-    /* Container Banner Detail Memenuhi Halaman */
     .detail-card-full {
       width: 100%;
       background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.01);
+      margin-bottom: 20px;
     }
 
     .detail-title-group {
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--border-color);
     }
 
     .detail-title-group .category-tag {
-      font-size: 0.75rem;
-      font-weight: bold;
-      color: #00a2e8;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--primary);
       letter-spacing: 1px;
       text-transform: uppercase;
       margin-bottom: 4px;
     }
 
     .detail-title-group h3 {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 800;
-      color: #0f172a;
+      color: var(--text-main);
       text-transform: uppercase;
     }
 
-    /* Grid Statistik Proporsional (3 Kolom Seimbang) */
     .detail-metrics-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: 20px;
     }
 
     @media (max-width: 768px) {
@@ -339,43 +400,76 @@
     }
 
     .metric-box {
-      background: #ffffff;
-      padding: 16px 20px;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.01);
       transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .metric-box:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.04);
     }
 
     .metric-box .label {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      color: #64748b;
+      color: var(--text-muted);
       text-transform: uppercase;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       letter-spacing: 0.5px;
     }
 
     .metric-box .val-display {
       font-size: 1.5rem;
       font-weight: 800;
-      color: #0f172a;
+      color: var(--text-main);
     }
 
     .metric-box .badge-display {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
-      padding: 4px 16px;
+      padding: 6px 18px;
       border-radius: 20px;
+    }
+
+    /* Container Grafik Kinerja Spesifik */
+    .chart-container-box {
+      background: var(--bg-card);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+    }
+
+    /* Style Tambahan Halaman Lain */
+    .page-card {
+      background: var(--bg-card);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+    }
+    .page-card h3 {
+      font-size: 1.05rem;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 10px;
+      font-weight: 700;
+    }
+    .page-card p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
     }
   </style>
 </head>
@@ -385,9 +479,9 @@
   <aside class="sidebar" id="sidebar">
     <h2>UP3 FBT TANCAP GAS</h2>
     <ul>
-      <li><a href="#" class="menu-item active">📊 KINERJA UP3 FBT</a></li>
-      <li><a href="#" class="menu-item">⚡ Keandalan & JTM</a></li>
-      <li><a href="#" class="menu-item">👥 Pelayanan Pelanggan</a></li>
+      <li><a href="#" class="menu-item active" data-target="page-kinerja">📊 KINERJA UP3 FBT</a></li>
+      <li><a href="#" class="menu-item" data-target="page-keandalan">⚡ ANGGARAN INVESTASI</a></li>
+      <li><a href="#" class="menu-item" data-target="page-pelayanan">👥 ANGGARAN OPERASI</a></li>
     </ul>
   </aside>
 
@@ -396,7 +490,7 @@
     <header>
       <div class="header-left">
         <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-        <h1 id="page-title">UP3 FBT TANCAP GAS</h1>
+        <h1 id="page-title">📊 KINERJA UP3 FBT</h1>
       </div>
       
       <!-- Filter Bulan -->
@@ -415,94 +509,165 @@
     </header>
 
     <div class="content-area">
-      <!-- Header KPI Utama Block Biru PLN (Judul ini sekarang statis/tidak ikut berubah) -->
-      <div class="zone-header zone-header-pln">
-        <h2>⚡ KEY PERFORMANCE INDICATOR UTAMA ⚡</h2>
+
+      <!-- ================= HALAMAN 1: KINERJA UP3 FBT ================= -->
+      <div id="page-kinerja" class="page-view active-page">
+        <div class="zone-header zone-header-pln">
+          <h2>⚡ KEY PERFORMANCE INDICATOR UTAMA ⚡</h2>
+        </div>
+
+        <div class="cards-grid">
+          <div class="card">
+            <div class="category-tag">UTAMA</div>
+            <h3>PENJUALAN TENAGA LISTRIK</h3>
+            <div class="value-group">
+              <div class="value" id="val-penjualan">0 GWh</div>
+              <div class="percentage" id="pct-penjualan">0%</div>
+            </div>
+            <div class="subtext" id="target-penjualan">Target: 0 GWh</div>
+          </div>
+
+          <div class="card">
+            <div class="category-tag">UTAMA</div>
+            <h3>SUSUT DISTRIBUSI TANPA E-MIN</h3>
+            <div class="value-group">
+              <div class="value" id="val-susut">0 %</div>
+              <div class="percentage" id="pct-susut">0%</div>
+            </div>
+            <div class="subtext" id="target-susut">Target: 0 %</div>
+          </div>
+
+          <div class="card">
+            <div class="category-tag">UTAMA</div>
+            <h3>SAIDI (SESUAI KEWENANGAN)</h3>
+            <div class="value-group">
+              <div class="value" id="val-saidi">0 Jam</div>
+              <div class="percentage" id="pct-saidi">0%</div>
+            </div>
+            <div class="subtext" id="target-saidi">Target Maks: 0 Jam</div>
+          </div>
+
+          <div class="card">
+            <div class="category-tag">UTAMA</div>
+            <h3>SAIFI (SESUAI KEWENANGAN)</h3>
+            <div class="value-group">
+              <div class="value" id="val-saifi">0 Kali</div>
+              <div class="percentage" id="pct-saifi">0%</div>
+            </div>
+            <div class="subtext" id="target-saifi">Target Maks: 0 Kali</div>
+          </div>
+
+          <div class="card">
+            <div class="category-tag">UTAMA</div>
+            <h3>ENS (SESUAI KEWENANGAN)</h3>
+            <div class="value-group">
+              <div class="value" id="val-ens">0 MWh</div>
+              <div class="percentage" id="pct-ens">0%</div>
+            </div>
+            <div class="subtext" id="target-ens">Target Maks: 0 MWh</div>
+          </div>
+        </div>
+
+        <!-- Section Dual Grid (YELLOW ZONE vs RED ZONE) -->
+        <div class="dual-grid-container">
+          <div class="status-column">
+            <div class="zone-header zone-header-pln" style="background: linear-gradient(135deg, #ca8a04 0%, #eab308 100%);">
+              <h2>⚠️ YELLOW ZONE (95% - 99.9%) ⚠️</h2>
+            </div>
+            <div class="underperforming-grid" id="grid-yellow"></div>
+          </div>
+
+          <div class="status-column">
+            <div class="zone-header zone-header-pln" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
+              <h2>🚨 RED ZONE (&lt; 95%) 🚨</h2>
+            </div>
+            <div class="underperforming-grid" id="grid-red"></div>
+          </div>
+        </div>
+
+        <!-- Section Detail Kinerja Spesifik Full-Width Layout -->
+        <div class="detail-section">
+          <div class="detail-header">
+            <h2>📌 DETAIL KINERJA SPESIFIK</h2>
+            <div class="filter-container">
+              <label for="metricFilter">Pilih Indikator:</label>
+              <select id="metricFilter" onchange="updateSelectedMetric()">
+                <!-- Dropdown diisi otomatis oleh JavaScript -->
+              </select>
+            </div>
+          </div>
+          
+          <div class="detail-card-full" id="detail-card-container">
+            <!-- Tampilan Detail Proporsional Muncul di Sini -->
+          </div>
+
+          <!-- Elemen Grafik Tren Perbandingan Target vs Realisasi -->
+          <div class="chart-container-box">
+            <h3 style="margin-bottom: 15px; font-size: 0.95rem; color: var(--text-main); text-transform: uppercase;">📈 Tren Perbandingan Target vs Realisasi (s.d. Bulan Terpilih)</h3>
+            <canvas id="kinerjaChart" height="100"></canvas>
+          </div>
+        </div>
       </div>
 
-      <div class="cards-grid">
-        <div class="card" style="border-left-color: #00a2e8;">
-          <div class="category-tag">UTAMA</div>
-          <h3>PENJUALAN TENAGA LISTRIK</h3>
-          <div class="value-group">
-            <div class="value" id="val-penjualan">0 GWh</div>
-            <div class="percentage" id="pct-penjualan">0%</div>
-          </div>
-          <div class="subtext" id="target-penjualan">Target: 0 GWh</div>
+      <!-- ================= HALAMAN 2: MONITORING ANGGARAN INVESTASI ================= -->
+      <div id="page-keandalan" class="page-view">
+        <div class="zone-header zone-header-pln">
+          <h2>⚡ MONITORING ANGGARAN INVESTASI ⚡</h2>
         </div>
-
-        <div class="card" style="border-left-color: #00a2e8;">
-          <div class="category-tag">UTAMA</div>
-          <h3>SUSUT DISTRIBUSI TANPA E-MIN (SESUAI KEWENANGAN)</h3>
-          <div class="value-group">
-            <div class="value" id="val-susut">0 %</div>
-            <div class="percentage" id="pct-susut">0%</div>
-          </div>
-          <div class="subtext" id="target-susut">Target: 0 %</div>
+        <div class="page-card">
+          <h3>Ringkasan Anggaran Investasi</h3>
+          <p>Halaman ini dikhususkan untuk memantau performa gangguan TM, kerusakan peralatan distribusi, dan parameter emergency response time secara mendalam.</p>
         </div>
-
-        <div class="card" style="border-left-color: #00a2e8;">
-          <div class="category-tag">UTAMA</div>
-          <h3>SAIDI (SESUAI KEWENANGAN)</h3>
-          <div class="value-group">
-            <div class="value" id="val-saidi">0 Jam</div>
-            <div class="percentage" id="pct-saidi">0%</div>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="category-tag">JTM</div>
+            <h3>GANGGUAN TM</h3>
+            <div class="value-group">
+              <div class="value">207 Kali</div>
+              <div class="percentage bg-green">100%</div>
+            </div>
+            <div class="subtext">Target Maks: 355 Kali</div>
           </div>
-          <div class="subtext" id="target-saidi">Target Maks: 0 Jam</div>
-        </div>
-
-        <div class="card" style="border-left-color: #00a2e8;">
-          <div class="category-tag">UTAMA</div>
-          <h3>SAIFI (SESUAI KEWENANGAN)</h3>
-          <div class="value-group">
-            <div class="value" id="val-saifi">0 Kali</div>
-            <div class="percentage" id="pct-saifi">0%</div>
+          <div class="card">
+            <div class="category-tag">JTM</div>
+            <h3>KERUSAKAN PERALATAN DISTRIBUSI</h3>
+            <div class="value-group">
+              <div class="value">0 Kali</div>
+              <div class="percentage bg-green">100%</div>
+            </div>
+            <div class="subtext">Target Maks: 0 Kali</div>
           </div>
-          <div class="subtext" id="target-saifi">Target Maks: 0 Kali</div>
-        </div>
-
-        <div class="card" style="border-left-color: #00a2e8;">
-          <div class="category-tag">UTAMA</div>
-          <h3>ENS (SESUAI KEWENANGAN)</h3>
-          <div class="value-group">
-            <div class="value" id="val-ens">0 MWh</div>
-            <div class="percentage" id="pct-ens">0%</div>
-          </div>
-          <div class="subtext" id="target-ens">Target Maks: 0 MWh</div>
         </div>
       </div>
 
-      <!-- Section Dual Grid (YELLOW ZONE vs RED ZONE) -->
-      <div class="dual-grid-container">
-        <div class="status-column">
-          <div class="zone-header zone-header-pln">
-            <h2>⚠️ KINERJA TIDAK TERCAPAI (YELLOW ZONE: 95% - 99.9%) ⚠️</h2>
-          </div>
-          <div class="underperforming-grid" id="grid-yellow"></div>
+      <!-- ================= HALAMAN 3: MONITORING ANGGARAN OPERASI ================= -->
+      <div id="page-pelayanan" class="page-view">
+        <div class="zone-header zone-header-pln">
+          <h2>👥 MONITORING ANGGARAN OPERASI ⚡</h2>
         </div>
-
-        <div class="status-column">
-          <div class="zone-header zone-header-pln">
-            <h2>🚨 KINERJA TIDAK TERCAPAI (RED ZONE: &lt; 95%) 🚨</h2>
-          </div>
-          <div class="underperforming-grid" id="grid-red"></div>
+        <div class="page-card">
+          <h3>Statistik Anggaran Operasi</h3>
+          <p>Halaman ini menampilkan laporan terkait feedback rating negatif pada PLN Mobile, response time atas gangguan, serta percepatan penyambungan pelanggan baru.</p>
         </div>
-      </div>
-
-      <!-- Section Detail Kinerja Spesifik Full-Width Layout -->
-      <div class="detail-section">
-        <div class="detail-header">
-          <h2>📌 DETAIL KINERJA SPESIFIK</h2>
-          <div class="filter-container">
-            <label for="metricFilter">Pilih Indikator:</label>
-            <select id="metricFilter" onchange="updateSelectedMetric()">
-              <!-- Dropdown diisi otomatis oleh JavaScript -->
-            </select>
+        <div class="cards-grid">
+          <div class="card">
+            <div class="category-tag">PELAYANAN</div>
+            <h3>FEEDBACK RATING NEGATIF PLN MOBILE</h3>
+            <div class="value-group">
+              <div class="value">6 Laporan</div>
+              <div class="percentage bg-green">100%</div>
+            </div>
+            <div class="subtext">Target Maks: 8 Laporan</div>
           </div>
-        </div>
-        
-        <div class="detail-card-full" id="detail-card-container">
-          <!-- Tampilan Detail Proporsional Muncul di Sini -->
+          <div class="card">
+            <div class="category-tag">PELAYANAN</div>
+            <h3>RESPONSE TIME GANGGUAN</h3>
+            <div class="value-group">
+              <div class="value">32.19 Menit</div>
+              <div class="percentage bg-yellow">93.2%</div>
+            </div>
+            <div class="subtext">Target: 30 Menit</div>
+          </div>
         </div>
       </div>
 
@@ -820,11 +985,24 @@
       }
     };
 
+    const monthSequence = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL'];
+    const monthLabelsMap = {
+      JAN: 'Januari',
+      FEB: 'Februari',
+      MAR: 'Maret',
+      APR: 'April',
+      MAY: 'Mei',
+      JUN: 'Juni',
+      JUL: 'Juli'
+    };
+
+    let kinerjaChart = null;
+
     function toggleSidebar() {
       document.getElementById("sidebar").classList.toggle("collapsed");
     }
 
-    // Event listener hanya mengubah menu aktif dan judul halaman di header atas saja
+    // Navigasi Antar Halaman & Ganti Judul Header
     document.querySelectorAll('.menu-item').forEach(item => {
       item.addEventListener('click', function(e) {
         e.preventDefault();
@@ -833,6 +1011,10 @@
         
         const menuText = this.textContent.trim();
         document.getElementById('page-title').innerText = menuText;
+
+        document.querySelectorAll('.page-view').forEach(page => page.classList.remove('active-page'));
+        const targetPageId = this.getAttribute('data-target');
+        document.getElementById(targetPageId).classList.add('active-page');
       });
     });
 
@@ -930,6 +1112,73 @@
           </div>
         </div>
       `;
+
+      updateChartData();
+    }
+
+    function updateChartData() {
+      const selectedMonth = document.getElementById("monthFilter").value;
+      const selectedKey = document.getElementById("metricFilter").value;
+      const maxIndex = monthSequence.indexOf(selectedMonth);
+
+      const labels = [];
+      const targetValues = [];
+      const realValues = [];
+
+      for (let i = 0; i <= maxIndex; i++) {
+        const mKey = monthSequence[i];
+        labels.push(monthLabelsMap[mKey]);
+        
+        const mData = dataKinerjaPerBulan[mKey][selectedKey] || { real: 0, target: 0 };
+        targetValues.push(mData.target);
+        realValues.push(mData.real);
+      }
+
+      if (kinerjaChart) {
+        kinerjaChart.data.labels = labels;
+        kinerjaChart.data.datasets[0].data = targetValues;
+        kinerjaChart.data.datasets[1].data = realValues;
+        kinerjaChart.update();
+      } else {
+        const ctx = document.getElementById('kinerjaChart').getContext('2d');
+        kinerjaChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Target',
+                data: targetValues,
+                backgroundColor: '#1e3a8a', // Biru Tua yang Sangat Kontras
+                borderColor: '#172554',
+                borderWidth: 1,
+                borderRadius: 4
+              },
+              {
+                label: 'Realisasi',
+                data: realValues,
+                backgroundColor: '#f97316', // Oranye Terang/Amber yang Kontras
+                borderColor: '#c2410c',
+                borderWidth: 1,
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      }
     }
 
     function updateDashboard() {
@@ -947,10 +1196,14 @@
         const achievementPct = calculateAchievement(item.real, item.target, config.polarity);
 
         if (config.isPrimary) {
-          document.getElementById(`val-${key}`).innerText = `${item.real} ${item.unit}`.trim();
-          setBadge(`pct-${key}`, achievementPct);
-          const labelPrefix = (config.polarity === 1 && key !== 'susut') ? 'Target Maks: ' : 'Target: ';
-          document.getElementById(`target-${key}`).innerText = `${labelPrefix}${item.target} ${item.unit}`.trim();
+          const elVal = document.getElementById(`val-${key}`);
+          const elTarget = document.getElementById(`target-${key}`);
+          if (elVal && elTarget) {
+            elVal.innerText = `${item.real} ${item.unit}`.trim();
+            setBadge(`pct-${key}`, achievementPct);
+            const labelPrefix = (config.polarity === 1 && key !== 'susut') ? 'Target Maks: ' : 'Target: ';
+            elTarget.innerText = `${labelPrefix}${item.target} ${item.unit}`.trim();
+          }
         }
 
         const dataObj = {
@@ -976,6 +1229,7 @@
 
     function renderGrid(containerId, list, borderClass, emptyMessage) {
       const container = document.getElementById(containerId);
+      if (!container) return;
       container.innerHTML = "";
 
       if (list.length === 0) {
