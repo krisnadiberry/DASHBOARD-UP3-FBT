@@ -31,7 +31,7 @@
       height: 100vh;
       background-color: var(--bg-main);
       color: var(--text-main);
-      overflow: hidden;
+      overflow: hidden; /* Mencegah body utama ikut scroll */
     }
 
     /* Sidebar Navigation */
@@ -92,7 +92,8 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
+      height: 100vh;
+      overflow: hidden; /* Mengunci overflow di container utama agar scroll khusus di area konten */
       width: 100%;
     }
 
@@ -105,6 +106,8 @@
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      flex-shrink: 0;
+      z-index: 100; /* Menjaga header selalu di atas konten saat di-scroll */
     }
 
     .header-left {
@@ -170,6 +173,8 @@
 
     .content-area {
       padding: 28px;
+      flex: 1;
+      overflow-y: auto; /* Membuat area ini saja yang bisa digulir ke bawah */
     }
 
     /* Page Views Management */
@@ -1149,7 +1154,7 @@
               {
                 label: 'Target',
                 data: targetValues,
-                backgroundColor: '#1e3a8a', // Biru Tua yang Sangat Kontras
+                backgroundColor: '#1e3a8a',
                 borderColor: '#172554',
                 borderWidth: 1,
                 borderRadius: 4
@@ -1157,7 +1162,7 @@
               {
                 label: 'Realisasi',
                 data: realValues,
-                backgroundColor: '#f97316', // Oranye Terang/Amber yang Kontras
+                backgroundColor: '#f97316',
                 borderColor: '#c2410c',
                 borderWidth: 1,
                 borderRadius: 4
