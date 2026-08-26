@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Kinerja UP3 FBT</title>
+  <title>UP3 FBT TANCAP GAS</title>
   <style>
     * {
       box-sizing: border-box;
@@ -32,17 +32,17 @@
       flex-shrink: 0;
     }
 
-    /* Class untuk menyembunyikan Sidebar */
     .sidebar.collapsed {
       margin-left: -240px;
     }
 
     .sidebar h2 {
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       margin-bottom: 30px;
       color: #38bdf8;
       padding: 0 10px;
+      line-height: 1.3;
     }
 
     .sidebar ul {
@@ -56,11 +56,12 @@
       text-decoration: none;
       font-weight: 500;
       transition: all 0.3s;
+      cursor: pointer;
     }
 
     .sidebar li a:hover,
     .sidebar li a.active {
-      background-color: #0284c7;
+      background-color: #00a2e8;
       color: #fff;
     }
 
@@ -89,9 +90,8 @@
       gap: 15px;
     }
 
-    /* Tombol Toggle Sidebar */
     .toggle-btn {
-      background-color: #0284c7;
+      background-color: #00a2e8;
       color: white;
       border: none;
       padding: 8px 12px;
@@ -102,7 +102,7 @@
     }
 
     .toggle-btn:hover {
-      background-color: #0369a1;
+      background-color: #0084be;
     }
 
     header h1 {
@@ -134,32 +134,41 @@
       color: #0f172a;
       outline: none;
       cursor: pointer;
+      max-width: 350px;
     }
 
     .content-area {
       padding: 24px;
     }
 
-    /* Section KPI Header */
-    .kpi-header {
+    /* Zone & Section Block Header Styles */
+    .zone-header {
+      padding: 12px 16px;
+      border-radius: 6px;
+      text-align: center;
       margin-bottom: 16px;
-      border-bottom: 2px solid #0284c7;
-      padding-bottom: 6px;
     }
 
-    .kpi-header h2 {
+    .zone-header h2 {
       font-size: 1.1rem;
-      color: #0f172a;
+      font-weight: 800;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      letter-spacing: 1px;
     }
 
-    /* 5 KPI Grid Layout */
+    .zone-header-pln {
+      background-color: #00a2e8;
+      color: #ffffff;
+      border: 1px solid #0084be;
+      box-shadow: 0 2px 4px rgba(0, 162, 232, 0.2);
+    }
+
+    /* Standard Card Component */
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 30px;
     }
 
     .card {
@@ -167,18 +176,29 @@
       padding: 16px;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      border-left: 4px solid #0284c7;
+      border-left: 4px solid #00a2e8;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    .card h3 {
-      font-size: 0.8rem;
+    .card.yellow-border { border-left-color: #eab308; }
+    .card.red-border { border-left-color: #ef4444; }
+
+    .card .category-tag {
+      font-size: 0.7rem;
       color: #64748b;
-      margin-bottom: 8px;
+      font-weight: bold;
       text-transform: uppercase;
-      height: 32px;
+      margin-bottom: 4px;
+    }
+
+    .card h3 {
+      font-size: 0.85rem;
+      color: #0f172a;
+      margin-bottom: 12px;
+      min-height: 32px;
+      text-transform: uppercase;
     }
 
     .card .value-group {
@@ -189,7 +209,7 @@
     }
 
     .card .value {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: bold;
       color: #0f172a;
     }
@@ -197,39 +217,165 @@
     .card .percentage {
       font-size: 0.85rem;
       font-weight: bold;
-      padding: 3px 6px;
+      padding: 3px 8px;
       border-radius: 4px;
     }
 
     .bg-green { background-color: #dcfce7; color: #15803d; }
+    .bg-yellow { background-color: #fef9c3; color: #a16207; }
+    .bg-red { background-color: #fee2e2; color: #b91c1c; }
 
     .card .subtext {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       color: #94a3b8;
-      margin-top: 6px;
+      margin-top: 8px;
     }
 
-    /* Embedded Sheet Container */
-    .sheet-container {
-      background: #fff;
-      border-radius: 8px;
+    /* Dual Grid Layout */
+    .dual-grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 900px) {
+      .dual-grid-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .status-column {
+      background: #ffffff;
       padding: 16px;
+      border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    .tab-content {
-      display: none;
+    .underperforming-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
     }
 
-    .tab-content.active {
-      display: block;
+    .empty-card-msg {
+      padding: 16px;
+      text-align: center;
+      color: #64748b;
+      font-size: 0.85rem;
+      background: #f8fafc;
+      border-radius: 6px;
+      border: 1px dashed #cbd5e1;
     }
 
-    iframe {
+    /* Section Detail Kinerja Spesifik - Full Width Responsive Grid */
+    .detail-section {
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      border-top: 4px solid #00a2e8;
       width: 100%;
-      height: 600px;
-      border: none;
-      border-radius: 4px;
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .detail-header h2 {
+      font-size: 1.1rem;
+      color: #0f172a;
+      letter-spacing: 0.5px;
+    }
+
+    /* Container Banner Detail Memenuhi Halaman */
+    .detail-card-full {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    .detail-title-group {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .detail-title-group .category-tag {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #00a2e8;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .detail-title-group h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+    }
+
+    /* Grid Statistik Proporsional (3 Kolom Seimbang) */
+    .detail-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .detail-metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .metric-box {
+      background: #ffffff;
+      padding: 16px 20px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .metric-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .metric-box .label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-box .val-display {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .metric-box .badge-display {
+      font-size: 1.25rem;
+      font-weight: 800;
+      padding: 4px 16px;
+      border-radius: 20px;
     }
   </style>
 </head>
@@ -237,11 +383,11 @@
 
   <!-- Sidebar Menu -->
   <aside class="sidebar" id="sidebar">
-    <h2>KINERJA UP3 FBT</h2>
+    <h2>UP3 FBT TANCAP GAS</h2>
     <ul>
-      <li><a href="#" class="active" onclick="openTab(event, 'overview')">📊 Overview Utama</a></li>
-      <li><a href="#" onclick="openTab(event, 'keandalan')">⚡ Keandalan & JTM</a></li>
-      <li><a href="#" onclick="openTab(event, 'pelayanan')">👥 Pelayanan Pelanggan</a></li>
+      <li><a href="#" class="menu-item active">📊 KINERJA UP3 FBT</a></li>
+      <li><a href="#" class="menu-item">⚡ Keandalan & JTM</a></li>
+      <li><a href="#" class="menu-item">👥 Pelayanan Pelanggan</a></li>
     </ul>
   </aside>
 
@@ -250,7 +396,7 @@
     <header>
       <div class="header-left">
         <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-        <h1 id="page-title">Dashboard Utama</h1>
+        <h1 id="page-title">UP3 FBT TANCAP GAS</h1>
       </div>
       
       <!-- Filter Bulan -->
@@ -269,76 +415,94 @@
     </header>
 
     <div class="content-area">
-      
-      <!-- Judul Bagian Kinerja -->
-      <div class="kpi-header">
-        <h2>KEY PERFORMANCE INDICATOR</h2>
+      <!-- Header KPI Utama Block Biru PLN (Judul ini sekarang statis/tidak ikut berubah) -->
+      <div class="zone-header zone-header-pln">
+        <h2>⚡ KEY PERFORMANCE INDICATOR UTAMA ⚡</h2>
       </div>
 
-      <!-- 5 Block KPI Utama -->
       <div class="cards-grid">
-        <div class="card" style="border-left-color: #0284c7;">
-          <h3>1. Penjualan Tenaga Listrik</h3>
+        <div class="card" style="border-left-color: #00a2e8;">
+          <div class="category-tag">UTAMA</div>
+          <h3>PENJUALAN TENAGA LISTRIK</h3>
           <div class="value-group">
-            <div class="value" id="val-penjualan">5.86 GWh</div>
-            <div class="percentage bg-green" id="pct-penjualan">97.7%</div>
+            <div class="value" id="val-penjualan">0 GWh</div>
+            <div class="percentage" id="pct-penjualan">0%</div>
           </div>
-          <div class="subtext" id="target-penjualan">Target: 6.00 GWh</div>
+          <div class="subtext" id="target-penjualan">Target: 0 GWh</div>
         </div>
 
-        <div class="card" style="border-left-color: #eab308;">
-          <h3>2. Susut Distribusi</h3>
+        <div class="card" style="border-left-color: #00a2e8;">
+          <div class="category-tag">UTAMA</div>
+          <h3>SUSUT DISTRIBUSI TANPA E-MIN (SESUAI KEWENANGAN)</h3>
           <div class="value-group">
-            <div class="value" id="val-susut">6.14 %</div>
-            <div class="percentage bg-green" id="pct-susut">108.3%</div>
+            <div class="value" id="val-susut">0 %</div>
+            <div class="percentage" id="pct-susut">0%</div>
           </div>
-          <div class="subtext" id="target-susut">Target: 6.65 %</div>
+          <div class="subtext" id="target-susut">Target: 0 %</div>
         </div>
 
-        <div class="card" style="border-left-color: #22c55e;">
-          <h3>3. SAIDI Realisasi</h3>
+        <div class="card" style="border-left-color: #00a2e8;">
+          <div class="category-tag">UTAMA</div>
+          <h3>SAIDI (SESUAI KEWENANGAN)</h3>
           <div class="value-group">
-            <div class="value" id="val-saidi">37.83 Jam</div>
-            <div class="percentage bg-green" id="pct-saidi">131.9%</div>
+            <div class="value" id="val-saidi">0 Jam</div>
+            <div class="percentage" id="pct-saidi">0%</div>
           </div>
-          <div class="subtext" id="target-saidi">Target Maks: 49.91 Jam</div>
+          <div class="subtext" id="target-saidi">Target Maks: 0 Jam</div>
         </div>
 
-        <div class="card" style="border-left-color: #8b5cf6;">
-          <h3>4. SAIFI Realisasi</h3>
+        <div class="card" style="border-left-color: #00a2e8;">
+          <div class="category-tag">UTAMA</div>
+          <h3>SAIFI (SESUAI KEWENANGAN)</h3>
           <div class="value-group">
-            <div class="value" id="val-saifi">0.80 Kali</div>
-            <div class="percentage bg-green" id="pct-saifi">116.3%</div>
+            <div class="value" id="val-saifi">0 Kali</div>
+            <div class="percentage" id="pct-saifi">0%</div>
           </div>
-          <div class="subtext" id="target-saifi">Target Maks: 0.93 Kali</div>
+          <div class="subtext" id="target-saifi">Target Maks: 0 Kali</div>
         </div>
 
-        <div class="card" style="border-left-color: #ef4444;">
-          <h3>5. ENS Realisasi</h3>
+        <div class="card" style="border-left-color: #00a2e8;">
+          <div class="category-tag">UTAMA</div>
+          <h3>ENS (SESUAI KEWENANGAN)</h3>
           <div class="value-group">
-            <div class="value" id="val-ens">16.85 MWh</div>
-            <div class="percentage bg-green" id="pct-ens">948.9%</div>
+            <div class="value" id="val-ens">0 MWh</div>
+            <div class="percentage" id="pct-ens">0%</div>
           </div>
-          <div class="subtext" id="target-ens">Target Maks: 159.89 MWh</div>
+          <div class="subtext" id="target-ens">Target Maks: 0 MWh</div>
         </div>
       </div>
 
-      <!-- Tab Content Sheets -->
-      <div id="overview" class="tab-content active">
-        <div class="sheet-container">
-          <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQBw0jyTuHfSdaLz-Bpm9l4oTSooOigsW9dAdG_2KEJeNM010k_kcX1ci4UMoMXVC0A0WtiNH-64EGl/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+      <!-- Section Dual Grid (YELLOW ZONE vs RED ZONE) -->
+      <div class="dual-grid-container">
+        <div class="status-column">
+          <div class="zone-header zone-header-pln">
+            <h2>⚠️ KINERJA TIDAK TERCAPAI (YELLOW ZONE: 95% - 99.9%) ⚠️</h2>
+          </div>
+          <div class="underperforming-grid" id="grid-yellow"></div>
+        </div>
+
+        <div class="status-column">
+          <div class="zone-header zone-header-pln">
+            <h2>🚨 KINERJA TIDAK TERCAPAI (RED ZONE: &lt; 95%) 🚨</h2>
+          </div>
+          <div class="underperforming-grid" id="grid-red"></div>
         </div>
       </div>
 
-      <div id="keandalan" class="tab-content">
-        <div class="sheet-container">
-          <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQBw0jyTuHfSdaLz-Bpm9l4oTSooOigsW9dAdG_2KEJeNM010k_kcX1ci4UMoMXVC0A0WtiNH-64EGl/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+      <!-- Section Detail Kinerja Spesifik Full-Width Layout -->
+      <div class="detail-section">
+        <div class="detail-header">
+          <h2>📌 DETAIL KINERJA SPESIFIK</h2>
+          <div class="filter-container">
+            <label for="metricFilter">Pilih Indikator:</label>
+            <select id="metricFilter" onchange="updateSelectedMetric()">
+              <!-- Dropdown diisi otomatis oleh JavaScript -->
+            </select>
+          </div>
         </div>
-      </div>
-
-      <div id="pelayanan" class="tab-content">
-        <div class="sheet-container">
-          <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQBw0jyTuHfSdaLz-Bpm9l4oTSooOigsW9dAdG_2KEJeNM010k_kcX1ci4UMoMXVC0A0WtiNH-64EGl/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+        
+        <div class="detail-card-full" id="detail-card-container">
+          <!-- Tampilan Detail Proporsional Muncul di Sini -->
         </div>
       </div>
 
@@ -346,109 +510,485 @@
   </main>
 
   <script>
-    const dataKinerja = {
+    const allKinerjaData = {
+      penjualan: { name: "PENJUALAN TENAGA LISTRIK", category: "UTAMA", polarity: 3, isPrimary: true },
+      susut: { name: "SUSUT DISTRIBUSI TANPA E-MIN (SESUAI KEWENANGAN)", category: "UTAMA", polarity: 1, isPrimary: true },
+      saidi: { name: "SAIDI (SESUAI KEWENANGAN)", category: "KEANDALAN PENYALURAN", polarity: 1, isPrimary: true },
+      saifi: { name: "SAIFI (SESUAI KEWENANGAN)", category: "KEANDALAN PENYALURAN", polarity: 1, isPrimary: true },
+      ens: { name: "ENS (SESUAI KEWENANGAN)", category: "KEANDALAN PENYALURAN", polarity: 1, isPrimary: true },
+      
+      ruptl_aset: { name: "PENAMBAHAN ASET RUPTL", category: "PENYELESAIAN RUPTL", polarity: 3, isPrimary: false },
+      ruptl_fisik: { name: "PENAMBAHAN ASET PENYELESAIAN FISIK INVESTASI", category: "PENYELESAIAN RUPTL", polarity: 3, isPrimary: false },
+      
+      pasang_pelanggan: { name: "PENAMBAHAN PELANGGAN", category: "PERCEPATAN PENYAMBUNGAN", polarity: 3, isPrimary: false },
+      pasang_daya: { name: "DAYA TERSAMBUNG", category: "PERCEPATAN PENYAMBUNGAN", polarity: 3, isPrimary: false },
+      pasang_biaya: { name: "PENDAPATAN BIAYA PENYAMBUNGAN", category: "PERCEPATAN PENYAMBUNGAN", polarity: 3, isPrimary: false },
+      pasang_lisdes_plg: { name: "PENAMBAHAN JUMLAH PELANGGAN LISDES", category: "PERCEPATAN PENYAMBUNGAN", polarity: 3, isPrimary: false },
+      pasang_lisdes_kwh: { name: "PENINGKATAN KWH PENJUALAN DARI PELANGGAN LISDES", category: "PERCEPATAN PENYAMBUNGAN", polarity: 3, isPrimary: false },
+      
+      layanan: { name: "FEEDBACK RATING NEGATIF PADA PLN MOBILE - GANGGUAN", category: "PENINGKATAN PELAYANAN", polarity: 1, isPrimary: false },
+      layanan_response: { name: "RESPONSE TIME ATAS GANGGUAN (DILUAR CLEAR TAMPER)", category: "PENINGKATAN PELAYANAN", polarity: 1, isPrimary: false },
+      layanan_auto: { name: "SUCCESS RATE AUTO DISPATCH GANGGUAN INDIVIDUAL (DILUAR CLEAR TAMPER)", category: "PENINGKATAN PELAYANAN", polarity: 3, isPrimary: false },
+      layanan_mobile_kali: { name: "KALI TRANSAKSI KEUANGAN PLN MOBILE", category: "PENINGKATAN PELAYANAN", polarity: 3, isPrimary: false },
+      layanan_mobile_rp: { name: "RUPIAH TRANSAKSI PLN MOBILE", category: "PENINGKATAN PELAYANAN", polarity: 3, isPrimary: false },
+      
+      jtm_gangguan: { name: "GANGGUAN TM (SESUAI KEWENANGAN)", category: "KEANDALAN JTM", polarity: 1, isPrimary: false },
+      jtm_rusak: { name: "KERUSAKAN PERALATAN DISTRIBUSI (SESUAI KEWENANGAN)", category: "KEANDALAN JTM", polarity: 1, isPrimary: false },
+      
+      ert_mvod: { name: "MVOD (SESUAI KEWENANGAN)", category: "EMERGENCY RESPONSE TIME", polarity: 3, isPrimary: false },
+      ert_mttr: { name: "MTTR SIAGA 1 TM (SESUAI KEWENANGAN)", category: "EMERGENCY RESPONSE TIME", polarity: 3, isPrimary: false },
+      
+      cash_saldo: { name: "PENCAPAIAN SALDO RATA-RATA AKHIR BULAN DILUAR KONSUMEN INSTANSI", category: "MANAGEMENT CASH IN", polarity: 1, isPrimary: false },
+      cash_prr: { name: "PENCAPAIAN PELUNASAN PRR, EX-PRR, DAN PIUTANG PRABAYAR", category: "MANAGEMENT CASH IN", polarity: 3, isPrimary: false },
+      cash_usulan: { name: "USULAN PENGHAPUSAN PRR", category: "MANAGEMENT CASH IN", polarity: 3, isPrimary: false },
+      
+      anggaran_rkap: { name: "PENGENDALIAN PENGGUNAAN ANGGARAN INVESTASI SESUAI RKAP", category: "PENGENDALIAN ANGGARAN", polarity: 2, isPrimary: false },
+      anggaran_attb: { name: "USULAN PENGHAPUSAN ATTB", category: "PENGENDALIAN ANGGARAN", polarity: 3, isPrimary: false },
+      anggaran_nac: { name: "PENGENDALIAN NAC (NON ALLOWABLE COST)", category: "PENGENDALIAN ANGGARAN", polarity: 1, isPrimary: false },
+      
+      energi_p2tl: { name: "PEROLEHAN KWH P2TL", category: "TRANSAKSI ENERGI", polarity: 3, isPrimary: false },
+      energi_meter: { name: "PENYELESAIAN GANTI METER", category: "TRANSAKSI ENERGI", polarity: 3, isPrimary: false },
+      energi_lbkb: { name: "TINDAK LANJUT LBKB (LAPORAN BULANAN KELAINAN BACA METER)", category: "TRANSAKSI ENERGI", polarity: 2, isPrimary: false },
+      
+      korporat_aset: { name: "PENGEMBANGAN ASET DISTRIBUSI", category: "DIGITALISASI APLIKASI", polarity: 3, isPrimary: false },
+      korporat_pelihara: { name: "EFEKTIVITAS PEMELIHARAAN", category: "DIGITALISASI APLIKASI", polarity: 3, isPrimary: false },
+      
+      kepatuhan_ml: { name: "IMPLEMENTASI MATURITY LEVEL", category: "KEPATUHAN & ML", polarity: 3, isPrimary: false },
+      kepatuhan_kepatuhan: { name: "KEPATUHAN", category: "KEPATUHAN & ML", polarity: 3, isPrimary: false },
+      kepatuhan_tatakelola: { name: "TATA KELOLA PERUSAHAAN", category: "KEPATUHAN & ML", polarity: 3, isPrimary: false }
+    };
+
+    const dataKinerjaPerBulan = {
       JAN: {
         penjualan: { real: 0.58, target: 1.02, unit: "GWh" },
         susut: { real: 6.39, target: 6.82, unit: "%" },
         saidi: { real: 6.80, target: 8.32, unit: "Jam" },
         saifi: { real: 0.14, target: 0.15, unit: "Kali" },
-        ens: { real: 3.41, target: 26.65, unit: "MWh" }
+        ens: { real: 3.41, target: 26.65, unit: "MWh" },
+        ruptl_aset: { real: 100, target: 100, unit: "%" },
+        ruptl_fisik: { real: 100, target: 100, unit: "%" },
+        pasang_pelanggan: { real: 1281, target: 754, unit: "Plg" },
+        pasang_daya: { real: 1.99, target: 0.93, unit: "MVA" },
+        pasang_biaya: { real: 1.47, target: 1.10, unit: "Milyar" },
+        pasang_lisdes_plg: { real: 0, target: 0, unit: "Plg" },
+        pasang_lisdes_kwh: { real: 0, target: 0, unit: "kWh" },
+        layanan: { real: 1, target: 0, unit: "Laporan" },
+        layanan_response: { real: 39.22, target: 30, unit: "Menit" },
+        layanan_auto: { real: 21.57, target: 5, unit: "%" },
+        layanan_mobile_kali: { real: 5.37, target: 3.73, unit: "Ribu" },
+        layanan_mobile_rp: { real: 1.05, target: 1.05, unit: "Milyar" },
+        jtm_gangguan: { real: 59, target: 60, unit: "Kali" },
+        jtm_rusak: { real: 0, target: 0, unit: "Kali" },
+        ert_mvod: { real: 110, target: 100, unit: "%" },
+        ert_mttr: { real: 110, target: 100, unit: "%" },
+        cash_saldo: { real: 0, target: 38.27, unit: "Milyar" },
+        cash_prr: { real: 0, target: 0, unit: "Jt" },
+        cash_usulan: { real: 0, target: 0, unit: "%" },
+        anggaran_rkap: { real: 100, target: 100, unit: "%" },
+        anggaran_attb: { real: 0, target: 0, unit: "Jt" },
+        anggaran_nac: { real: 0, target: 0, unit: "%" },
+        energi_p2tl: { real: 60571, target: 66990, unit: "kWh" },
+        energi_meter: { real: 419963, target: 815, unit: "Meter" },
+        energi_lbkb: { real: 100, target: 99, unit: "%" },
+        korporat_aset: { real: 110, target: 100, unit: "%" },
+        korporat_pelihara: { real: 110, target: 100, unit: "%" },
+        kepatuhan_ml: { real: 3.72, target: 4, unit: "Score" },
+        kepatuhan_kepatuhan: { real: 0, target: 0, unit: "%" },
+        kepatuhan_tatakelola: { real: 0, target: 0, unit: "%" }
       },
       FEB: {
         penjualan: { real: 1.33, target: 1.96, unit: "GWh" },
         susut: { real: 7.06, target: 6.79, unit: "%" },
         saidi: { real: 10.64, target: 16.64, unit: "Jam" },
         saifi: { real: 0.21, target: 0.31, unit: "Kali" },
-        ens: { real: 5.59, target: 53.30, unit: "MWh" }
+        ens: { real: 5.59, target: 53.30, unit: "MWh" },
+        ruptl_aset: { real: 100, target: 100, unit: "%" },
+        ruptl_fisik: { real: 100, target: 100, unit: "%" },
+        pasang_pelanggan: { real: 1767, target: 1812, unit: "Plg" },
+        pasang_daya: { real: 3.30, target: 2.00, unit: "MVA" },
+        pasang_biaya: { real: 2.56, target: 2.88, unit: "Milyar" },
+        pasang_lisdes_plg: { real: 0, target: 0, unit: "Plg" },
+        pasang_lisdes_kwh: { real: 0, target: 0, unit: "kWh" },
+        layanan: { real: 1, target: 0, unit: "Laporan" },
+        layanan_response: { real: 38.40, target: 30, unit: "Menit" },
+        layanan_auto: { real: 23.11, target: 5, unit: "%" },
+        layanan_mobile_kali: { real: 9.87, target: 7.41, unit: "Ribu" },
+        layanan_mobile_rp: { real: 2.16, target: 2.08, unit: "Milyar" },
+        jtm_gangguan: { real: 84, target: 119, unit: "Kali" },
+        jtm_rusak: { real: 0, target: 0, unit: "Kali" },
+        ert_mvod: { real: 110, target: 100, unit: "%" },
+        ert_mttr: { real: 110, target: 100, unit: "%" },
+        cash_saldo: { real: 0, target: 38.27, unit: "Milyar" },
+        cash_prr: { real: 23.64, target: 0, unit: "Jt" },
+        cash_usulan: { real: 0, target: 0, unit: "%" },
+        anggaran_rkap: { real: 100, target: 100, unit: "%" },
+        anggaran_attb: { real: 0, target: 0, unit: "Jt" },
+        anggaran_nac: { real: 0, target: 0, unit: "%" },
+        energi_p2tl: { real: 129480, target: 127281, unit: "kWh" },
+        energi_meter: { real: 1327, target: 1679, unit: "Meter" },
+        energi_lbkb: { real: 100, target: 99, unit: "%" },
+        korporat_aset: { real: 110, target: 100, unit: "%" },
+        korporat_pelihara: { real: 110, target: 100, unit: "%" },
+        kepatuhan_ml: { real: 3.64, target: 4, unit: "Score" },
+        kepatuhan_kepatuhan: { real: 0, target: 0, unit: "%" },
+        kepatuhan_tatakelola: { real: 0, target: 0, unit: "%" }
       },
       MAR: {
-        penjualan: { real: 3.86, target: 2.96, unit: "GWh" },
-        susut: { real: 7.11, target: 6.75, unit: "%" },
-        saidi: { real: 14.33, target: 24.96, unit: "Jam" },
-        saifi: { real: 0.31, target: 0.46, unit: "Kali" },
-        ens: { real: 6.76, target: 79.95, unit: "MWh" }
+        penjualan: { real: 2.10, target: 2.96, unit: "GWh" },
+        susut: { real: 6.85, target: 6.75, unit: "%" },
+        saidi: { real: 18.50, target: 24.96, unit: "Jam" },
+        saifi: { real: 0.35, target: 0.46, unit: "Kali" },
+        ens: { real: 10.20, target: 79.95, unit: "MWh" },
+        ruptl_aset: { real: 100, target: 100, unit: "%" },
+        ruptl_fisik: { real: 100, target: 100, unit: "%" },
+        pasang_pelanggan: { real: 2200, target: 2149, unit: "Plg" },
+        pasang_daya: { real: 3.10, target: 2.72, unit: "MVA" },
+        pasang_biaya: { real: 4.10, target: 3.82, unit: "Milyar" },
+        pasang_lisdes_plg: { real: 0, target: 0, unit: "Plg" },
+        pasang_lisdes_kwh: { real: 0, target: 0, unit: "kWh" },
+        layanan: { real: 2, target: 4, unit: "Laporan" },
+        layanan_response: { real: 35.00, target: 30, unit: "Menit" },
+        layanan_auto: { real: 15.00, target: 5, unit: "%" },
+        layanan_mobile_kali: { real: 12.50, target: 11.13, unit: "Ribu" },
+        layanan_mobile_rp: { real: 3.50, target: 3.12, unit: "Milyar" },
+        jtm_gangguan: { real: 130, target: 178, unit: "Kali" },
+        jtm_rusak: { real: 0, target: 0, unit: "Kali" },
+        ert_mvod: { real: 105, target: 100, unit: "%" },
+        ert_mttr: { real: 105, target: 100, unit: "%" },
+        cash_saldo: { real: 0, target: 38.27, unit: "Milyar" },
+        cash_prr: { real: 120.00, target: 109, unit: "Jt" },
+        cash_usulan: { real: 0, target: 0, unit: "%" },
+        anggaran_rkap: { real: 100, target: 100, unit: "%" },
+        anggaran_attb: { real: 0, target: 0, unit: "Jt" },
+        anggaran_nac: { real: 0, target: 0, unit: "%" },
+        energi_p2tl: { real: 180000, target: 184224, unit: "kWh" },
+        energi_meter: { real: 2700, target: 2839, unit: "Meter" },
+        energi_lbkb: { real: 100, target: 99, unit: "%" },
+        korporat_aset: { real: 105, target: 100, unit: "%" },
+        korporat_pelihara: { real: 105, target: 100, unit: "%" },
+        kepatuhan_ml: { real: 3.80, target: 4, unit: "Score" },
+        kepatuhan_kepatuhan: { real: 0, target: 0, unit: "%" },
+        kepatuhan_tatakelola: { real: 0, target: 0, unit: "%" }
       },
       APR: {
-        penjualan: { real: 3.57, target: 3.96, unit: "GWh" },
-        susut: { real: 7.23, target: 6.72, unit: "%" },
-        saidi: { real: 15.04, target: 33.27, unit: "Jam" },
-        saifi: { real: 0.32, target: 0.62, unit: "Kali" },
-        ens: { real: 7.18, target: 106.60, unit: "MWh" }
+        penjualan: { real: 3.20, target: 3.96, unit: "GWh" },
+        susut: { real: 6.70, target: 6.72, unit: "%" },
+        saidi: { real: 26.10, target: 33.27, unit: "Jam" },
+        saifi: { real: 0.50, target: 0.62, unit: "Kali" },
+        ens: { real: 12.80, target: 106.60, unit: "MWh" },
+        ruptl_aset: { real: 95, target: 100, unit: "%" },
+        ruptl_fisik: { real: 100, target: 100, unit: "%" },
+        pasang_pelanggan: { real: 2950, target: 3098, unit: "Plg" },
+        pasang_daya: { real: 4.10, target: 3.92, unit: "MVA" },
+        pasang_biaya: { real: 4.90, target: 4.81, unit: "Milyar" },
+        pasang_lisdes_plg: { real: 10, target: 12, unit: "Plg" },
+        pasang_lisdes_kwh: { real: 500, target: 648, unit: "kWh" },
+        layanan: { real: 3, target: 4, unit: "Laporan" },
+        layanan_response: { real: 34.20, target: 30, unit: "Menit" },
+        layanan_auto: { real: 18.20, target: 5, unit: "%" },
+        layanan_mobile_kali: { real: 16.10, target: 15.63, unit: "Ribu" },
+        layanan_mobile_rp: { real: 4.60, target: 4.39, unit: "Milyar" },
+        jtm_gangguan: { real: 190, target: 237, unit: "Kali" },
+        jtm_rusak: { real: 0, target: 0, unit: "Kali" },
+        ert_mvod: { real: 110, target: 100, unit: "%" },
+        ert_mttr: { real: 110, target: 100, unit: "%" },
+        cash_saldo: { real: 0, target: 38.27, unit: "Milyar" },
+        cash_prr: { real: 150.00, target: 148, unit: "Jt" },
+        cash_usulan: { real: 0, target: 0, unit: "%" },
+        anggaran_rkap: { real: 100, target: 100, unit: "%" },
+        anggaran_attb: { real: 0, target: 0, unit: "Jt" },
+        anggaran_nac: { real: 0, target: 0, unit: "%" },
+        energi_p2tl: { real: 250000, target: 254564, unit: "kWh" },
+        energi_meter: { real: 4000, target: 4133, unit: "Meter" },
+        energi_lbkb: { real: 100, target: 99, unit: "%" },
+        korporat_aset: { real: 108, target: 100, unit: "%" },
+        korporat_pelihara: { real: 110, target: 100, unit: "%" },
+        kepatuhan_ml: { real: 3.85, target: 4, unit: "Score" },
+        kepatuhan_kepatuhan: { real: 0, target: 0, unit: "%" },
+        kepatuhan_tatakelola: { real: 0, target: 0, unit: "%" }
       },
       MAY: {
-        penjualan: { real: 4.62, target: 5.00, unit: "GWh" },
-        susut: { real: 6.63, target: 6.68, unit: "%" },
-        saidi: { real: 25.17, target: 41.59, unit: "Jam" },
-        saifi: { real: 0.55, target: 0.77, unit: "Kali" },
-        ens: { real: 11.61, target: 133.24, unit: "MWh" }
+        penjualan: { real: 4.80, target: 5.00, unit: "GWh" },
+        susut: { real: 6.60, target: 6.68, unit: "%" },
+        saidi: { real: 31.40, target: 41.59, unit: "Jam" },
+        saifi: { real: 0.65, target: 0.77, unit: "Kali" },
+        ens: { real: 14.50, target: 133.24, unit: "MWh" },
+        ruptl_aset: { real: 90, target: 100, unit: "%" },
+        ruptl_fisik: { real: 100, target: 100, unit: "%" },
+        pasang_pelanggan: { real: 3500, target: 3699, unit: "Plg" },
+        pasang_daya: { real: 5.10, target: 4.86, unit: "MVA" },
+        pasang_biaya: { real: 5.80, target: 5.53, unit: "Milyar" },
+        pasang_lisdes_plg: { real: 20, target: 23, unit: "Plg" },
+        pasang_lisdes_kwh: { real: 1500, target: 1883, unit: "kWh" },
+        layanan: { real: 3, target: 4, unit: "Laporan" },
+        layanan_response: { real: 33.10, target: 30, unit: "Menit" },
+        layanan_auto: { real: 20.10, target: 5, unit: "%" },
+        layanan_mobile_kali: { real: 22.40, target: 21.09, unit: "Ribu" },
+        layanan_mobile_rp: { real: 6.10, target: 5.94, unit: "Milyar" },
+        jtm_gangguan: { real: 240, target: 297, unit: "Kali" },
+        jtm_rusak: { real: 0, target: 0, unit: "Kali" },
+        ert_mvod: { real: 110, target: 100, unit: "%" },
+        ert_mttr: { real: 110, target: 100, unit: "%" },
+        cash_saldo: { real: 0, target: 38.27, unit: "Milyar" },
+        cash_prr: { real: 190.00, target: 183, unit: "Jt" },
+        cash_usulan: { real: 0, target: 0, unit: "%" },
+        anggaran_rkap: { real: 100, target: 100, unit: "%" },
+        anggaran_attb: { real: 0, target: 0, unit: "Jt" },
+        anggaran_nac: { real: 0, target: 0, unit: "%" },
+        energi_p2tl: { real: 300000, target: 308156, unit: "kWh" },
+        energi_meter: { real: 5200, target: 5476, unit: "Meter" },
+        energi_lbkb: { real: 100, target: 99, unit: "%" },
+        korporat_aset: { real: 105, target: 100, unit: "%" },
+        korporat_pelihara: { real: 110, target: 100, unit: "%" },
+        kepatuhan_ml: { real: 3.80, target: 4, unit: "Score" },
+        kepatuhan_kepatuhan: { real: 0, target: 0, unit: "%" },
+        kepatuhan_tatakelola: { real: 0, target: 0, unit: "%" }
       },
       JUN: {
         penjualan: { real: 5.86, target: 6.00, unit: "GWh" },
         susut: { real: 6.14, target: 6.65, unit: "%" },
         saidi: { real: 37.83, target: 49.91, unit: "Jam" },
         saifi: { real: 0.80, target: 0.93, unit: "Kali" },
-        ens: { real: 16.85, target: 159.89, unit: "MWh" }
+        ens: { real: 16.85, target: 159.89, unit: "MWh" },
+        ruptl_aset: { real: 85, target: 100, unit: "%" },
+        ruptl_fisik: { real: 100, target: 100, unit: "%" },
+        pasang_pelanggan: { real: 3632, target: 4201, unit: "Plg" },
+        pasang_daya: { real: 8.20, target: 5.27, unit: "MVA" },
+        pasang_biaya: { real: 7.32, target: 6.61, unit: "Milyar" },
+        pasang_lisdes_plg: { real: 136, target: 35, unit: "Plg" },
+        pasang_lisdes_kwh: { real: 341, target: 3822, unit: "kWh" },
+        layanan: { real: 6, target: 8, unit: "Laporan" },
+        layanan_response: { real: 32.19, target: 30, unit: "Menit" },
+        layanan_auto: { real: 23.31, target: 5, unit: "%" },
+        layanan_mobile_kali: { real: 58.42, target: 26.48, unit: "Ribu" },
+        layanan_mobile_rp: { real: 9.73, target: 7.46, unit: "Milyar" },
+        jtm_gangguan: { real: 207, target: 355, unit: "Kali" },
+        jtm_rusak: { real: 0, target: 0, unit: "Kali" },
+        ert_mvod: { real: 110, target: 100, unit: "%" },
+        ert_mttr: { real: 110, target: 100, unit: "%" },
+        cash_saldo: { real: 0, target: 38.27, unit: "Milyar" },
+        cash_prr: { real: 539.66, target: 220, unit: "Jt" },
+        cash_usulan: { real: 0, target: 0, unit: "%" },
+        anggaran_rkap: { real: 103, target: 100, unit: "%" },
+        anggaran_attb: { real: 2755, target: 372.8, unit: "Jt" },
+        anggaran_nac: { real: 0, target: 0, unit: "%" },
+        energi_p2tl: { real: 390837, target: 375147, unit: "kWh" },
+        energi_meter: { real: 6940, target: 6825, unit: "Meter" },
+        energi_lbkb: { real: 100, target: 99, unit: "%" },
+        korporat_aset: { real: 100.3, target: 100, unit: "%" },
+        korporat_pelihara: { real: 110, target: 100, unit: "%" },
+        kepatuhan_ml: { real: 3.82, target: 4, unit: "Score" },
+        kepatuhan_kepatuhan: { real: 0, target: 0, unit: "%" },
+        kepatuhan_tatakelola: { real: 0, target: 0, unit: "%" }
       },
       JUL: {
-        penjualan: { real: 5.35, target: 7.05, unit: "GWh" },
-        susut: { real: 6.33, target: 6.60, unit: "%" },
-        saidi: { real: 39.09, target: 58.23, unit: "Jam" },
-        saifi: { real: 0.88, target: 1.08, unit: "Kali" },
-        ens: { real: 17.73, target: 186.54, unit: "MWh" }
+        penjualan: { real: 6.95, target: 7.05, unit: "GWh" },
+        susut: { real: 6.45, target: 6.80, unit: "%" },
+        saidi: { real: 42.10, target: 58.23, unit: "Jam" },
+        saifi: { real: 0.91, target: 1.08, unit: "Kali" },
+        ens: { real: 21.00, target: 188.54, unit: "MWh" },
+        ruptl_aset: { real: 100, target: 100, unit: "%" },
+        ruptl_fisik: { real: 100, target: 100, unit: "%" },
+        pasang_pelanggan: { real: 4600, target: 4745, unit: "Plg" },
+        pasang_daya: { real: 6.80, target: 6.71, unit: "MVA" },
+        pasang_biaya: { real: 7.90, target: 7.66, unit: "Milyar" },
+        pasang_lisdes_plg: { real: 40, target: 47, unit: "Plg" },
+        pasang_lisdes_kwh: { real: 7200, target: 8378, unit: "kWh" },
+        layanan: { real: 5, target: 8, unit: "Laporan" },
+        layanan_response: { real: 31.00, target: 30, unit: "Menit" },
+        layanan_auto: { real: 25.00, target: 5, unit: "%" },
+        layanan_mobile_kali: { real: 33.20, target: 31.80, unit: "Ribu" },
+        layanan_mobile_rp: { real: 9.10, target: 8.91, unit: "Milyar" },
+        jtm_gangguan: { real: 280, target: 415, unit: "Kali" },
+        jtm_rusak: { real: 1, target: 2, unit: "Kali" },
+        ert_mvod: { real: 110, target: 100, unit: "%" },
+        ert_mttr: { real: 110, target: 100, unit: "%" },
+        cash_saldo: { real: 0, target: 38.27, unit: "Milyar" },
+        cash_prr: { real: 280.00, target: 275, unit: "Jt" },
+        cash_usulan: { real: 0, target: 0, unit: "%" },
+        anggaran_rkap: { real: 100, target: 100, unit: "%" },
+        anggaran_attb: { real: 372.8, target: 372.8, unit: "Jt" },
+        anggaran_nac: { real: 5, target: 7, unit: "%" },
+        energi_p2tl: { real: 430000, target: 442555, unit: "kWh" },
+        energi_meter: { real: 8100, target: 8259, unit: "Meter" },
+        energi_lbkb: { real: 100, target: 99, unit: "%" },
+        korporat_aset: { real: 105, target: 100, unit: "%" },
+        korporat_pelihara: { real: 110, target: 100, unit: "%" },
+        kepatuhan_ml: { real: 3.90, target: 4, unit: "Score" },
+        kepatuhan_kepatuhan: { real: 0, target: 0, unit: "%" },
+        kepatuhan_tatakelola: { real: 0, target: 0, unit: "%" }
       }
     };
 
     function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("collapsed");
+      document.getElementById("sidebar").classList.toggle("collapsed");
+    }
+
+    // Event listener hanya mengubah menu aktif dan judul halaman di header atas saja
+    document.querySelectorAll('.menu-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+        this.classList.add('active');
+        
+        const menuText = this.textContent.trim();
+        document.getElementById('page-title').innerText = menuText;
+      });
+    });
+
+    function getRawAchievement(real, target, polarity) {
+      if (target === 0 && real === 0) return 100;
+      if (polarity === 3) {
+        return target === 0 ? 100 : (real / target) * 100;
+      } else if (polarity === 1) {
+        return real === 0 ? 100 : (target / real) * 100;
+      } else {
+        return 100;
+      }
+    }
+
+    function calculateAchievement(real, target, polarity) {
+      let pct = getRawAchievement(real, target, polarity);
+      if (pct > 110) pct = 110;
+      return pct.toFixed(1);
+    }
+
+    function getBadgeClass(val) {
+      if (val >= 100) return "bg-green";
+      if (val >= 95) return "bg-yellow";
+      return "bg-red";
+    }
+
+    function setBadge(elementId, achievementPct) {
+      const el = document.getElementById(elementId);
+      if (el) {
+        el.innerText = `${achievementPct}%`;
+        el.className = `percentage ${getBadgeClass(achievementPct)}`;
+      }
+    }
+
+    function createCardElement(item, borderClass) {
+      const card = document.createElement("div");
+      card.className = `card ${borderClass}`;
+      card.innerHTML = `
+        <div>
+          <div class="category-tag">${item.category}</div>
+          <h3>${item.name}</h3>
+        </div>
+        <div>
+          <div class="value-group">
+            <div class="value">${item.real}</div>
+            <div class="percentage ${getBadgeClass(item.pct)}">${item.pct}%</div>
+          </div>
+          <div class="subtext">Target: ${item.target}</div>
+        </div>
+      `;
+      return card;
+    }
+
+    function initMetricDropdown() {
+      const select = document.getElementById("metricFilter");
+      select.innerHTML = "";
+      Object.keys(allKinerjaData).forEach(key => {
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = allKinerjaData[key].name;
+        select.appendChild(opt);
+      });
+    }
+
+    function updateSelectedMetric() {
+      const selectedMonth = document.getElementById("monthFilter").value;
+      const currentMonthData = dataKinerjaPerBulan[selectedMonth] || dataKinerjaPerBulan['JAN'];
+      const selectedKey = document.getElementById("metricFilter").value;
+
+      const config = allKinerjaData[selectedKey];
+      const item = currentMonthData[selectedKey] || { real: 0, target: 0, unit: "" };
+
+      const container = document.getElementById("detail-card-container");
+      
+      const achievementPct = calculateAchievement(item.real, item.target, config.polarity);
+      const badgeClass = getBadgeClass(achievementPct);
+
+      container.innerHTML = `
+        <div class="detail-title-group">
+          <div class="category-tag">KATEGORI: ${config.category}</div>
+          <h3>${config.name}</h3>
+        </div>
+        <div class="detail-metrics-grid">
+          <div class="metric-box">
+            <span class="label">🎯 TARGET</span>
+            <span class="val-display">${item.target} ${item.unit}</span>
+          </div>
+          <div class="metric-box">
+            <span class="label">📊 REALISASI</span>
+            <span class="val-display">${item.real} ${item.unit}</span>
+          </div>
+          <div class="metric-box">
+            <span class="label">📈 CAPAIAN (PENCAPAIAN)</span>
+            <span class="badge-display ${badgeClass}">${achievementPct}%</span>
+          </div>
+        </div>
+      `;
     }
 
     function updateDashboard() {
       const selectedMonth = document.getElementById("monthFilter").value;
-      const data = dataKinerja[selectedMonth];
+      const currentMonthData = dataKinerjaPerBulan[selectedMonth] || dataKinerjaPerBulan['JAN'];
+      
+      const yellowList = [];
+      const redList = [];
 
-      if (!data) return;
+      Object.keys(allKinerjaData).forEach(key => {
+        const config = allKinerjaData[key];
+        const item = currentMonthData[key] || { real: 0, target: 0, unit: "" };
 
-      const pctPenjualan = ((data.penjualan.real / data.penjualan.target) * 100).toFixed(1);
-      document.getElementById("val-penjualan").innerText = `${data.penjualan.real} ${data.penjualan.unit}`;
-      document.getElementById("pct-penjualan").innerText = `${pctPenjualan}%`;
-      document.getElementById("target-penjualan").innerText = `Target: ${data.penjualan.target} ${data.penjualan.unit}`;
+        const rawPct = getRawAchievement(item.real, item.target, config.polarity);
+        const achievementPct = calculateAchievement(item.real, item.target, config.polarity);
 
-      const pctSusut = ((data.susut.target / data.susut.real) * 100).toFixed(1);
-      document.getElementById("val-susut").innerText = `${data.susut.real} ${data.susut.unit}`;
-      document.getElementById("pct-susut").innerText = `${pctSusut}%`;
-      document.getElementById("target-susut").innerText = `Target: ${data.susut.target} ${data.susut.unit}`;
+        if (config.isPrimary) {
+          document.getElementById(`val-${key}`).innerText = `${item.real} ${item.unit}`.trim();
+          setBadge(`pct-${key}`, achievementPct);
+          const labelPrefix = (config.polarity === 1 && key !== 'susut') ? 'Target Maks: ' : 'Target: ';
+          document.getElementById(`target-${key}`).innerText = `${labelPrefix}${item.target} ${item.unit}`.trim();
+        }
 
-      const pctSaidi = ((data.saidi.target / data.saidi.real) * 100).toFixed(1);
-      document.getElementById("val-saidi").innerText = `${data.saidi.real} ${data.saidi.unit}`;
-      document.getElementById("pct-saidi").innerText = `${pctSaidi}%`;
-      document.getElementById("target-saidi").innerText = `Target Maks: ${data.saidi.target} ${data.saidi.unit}`;
+        const dataObj = {
+          category: config.category,
+          name: config.name,
+          real: `${item.real} ${item.unit}`.trim(),
+          target: `${item.target} ${item.unit}`.trim(),
+          pct: achievementPct
+        };
 
-      const pctSaifi = ((data.saifi.target / data.saifi.real) * 100).toFixed(1);
-      document.getElementById("val-saifi").innerText = `${data.saifi.real} ${data.saifi.unit}`;
-      document.getElementById("pct-saifi").innerText = `${pctSaifi}%`;
-      document.getElementById("target-saifi").innerText = `Target Maks: ${data.saifi.target} ${data.saifi.unit}`;
+        if (rawPct >= 95 && rawPct < 100) {
+          yellowList.push(dataObj);
+        } else if (rawPct < 95) {
+          redList.push(dataObj);
+        }
+      });
 
-      const pctEns = ((data.ens.target / data.ens.real) * 100).toFixed(1);
-      document.getElementById("val-ens").innerText = `${data.ens.real} ${data.ens.unit}`;
-      document.getElementById("pct-ens").innerText = `${pctEns}%`;
-      document.getElementById("target-ens").innerText = `Target Maks: ${data.ens.target} ${data.ens.unit}`;
+      renderGrid("grid-yellow", yellowList, "yellow-border", "Tidak ada indikator di Yellow Zone.");
+      renderGrid("grid-red", redList, "red-border", "Tidak ada indikator di Red Zone.");
+      
+      updateSelectedMetric();
     }
 
-    function openTab(evt, tabName) {
-      const tabContents = document.getElementsByClassName("tab-content");
-      for (let i = 0; i < tabContents.length; i++) {
-        tabContents[i].classList.remove("active");
+    function renderGrid(containerId, list, borderClass, emptyMessage) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="empty-card-msg">${emptyMessage}</div>`;
+        return;
       }
 
-      const sidebarLinks = document.querySelectorAll(".sidebar li a");
-      sidebarLinks.forEach(link => link.classList.remove("active"));
-
-      document.getElementById(tabName).classList.add("active");
-      evt.currentTarget.classList.add("active");
-      document.getElementById("page-title").innerText = evt.currentTarget.innerText.replace(/[^a-zA-Z0-9& ]/g, '').trim();
+      list.forEach(item => {
+        container.appendChild(createCardElement(item, borderClass));
+      });
     }
 
+    initMetricDropdown();
     updateDashboard();
   </script>
 </body>
