@@ -100,29 +100,58 @@
     /* Header & Month Filter */
     header {
       background-color: var(--bg-card);
-      padding: 18px 32px;
+      padding: 14px 32px;
       border-bottom: 1px solid var(--border-color);
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 12px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.02);
       flex-shrink: 0;
       z-index: 100; /* Menjaga header selalu di atas konten saat di-scroll */
     }
 
-    .header-left {
+    .header-top {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      width: 100%;
+    }
+
+    .header-logo-left {
+      height: 32px;
+      object-fit: contain;
+    }
+
+    header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .header-logo-right {
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .header-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding-top: 4px;
+      border-top: 1px solid #f1f5f9;
     }
 
     .toggle-btn {
       background-color: var(--primary);
       color: white;
       border: none;
-      padding: 8px 12px;
-      font-size: 1.1rem;
-      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 1rem;
+      border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.2s, transform 0.1s;
     }
@@ -135,19 +164,12 @@
       transform: scale(0.95);
     }
 
-    header h1 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--text-main);
-      letter-spacing: -0.5px;
-    }
-
     .filter-container {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       background: #f8fafc;
-      padding: 8px 14px;
+      padding: 6px 12px;
       border-radius: 8px;
       border: 1px solid var(--border-color);
       box-shadow: inset 0 1px 2px rgba(0,0,0,0.01);
@@ -160,7 +182,7 @@
     }
 
     .filter-container select {
-      padding: 6px 12px;
+      padding: 4px 10px;
       border-radius: 6px;
       border: 1px solid #cbd5e1;
       font-weight: 600;
@@ -168,7 +190,7 @@
       outline: none;
       cursor: pointer;
       background: white;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .content-area {
@@ -493,23 +515,28 @@
   <!-- Main View -->
   <main class="main-content">
     <header>
-      <div class="header-left">
-        <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+      <div class="header-top">
+        <img src="Danantara_Logo.svg" alt="Logo Danantara" class="header-logo-left">
         <h1 id="page-title">📊 KINERJA UP3 FBT</h1>
+        <img src="PLN_Logo.svg" alt="Logo PLN" class="header-logo-right">
       </div>
       
-      <!-- Filter Bulan -->
-      <div class="filter-container">
-        <label for="monthFilter">Pilih Bulan:</label>
-        <select id="monthFilter" onchange="updateDashboard()">
-          <option value="JAN">Januari</option>
-          <option value="FEB">Februari</option>
-          <option value="MAR">Maret</option>
-          <option value="APR">April</option>
-          <option value="MAY">Mei</option>
-          <option value="JUN" selected>Juni</option>
-          <option value="JUL">Juli</option>
-        </select>
+      <div class="header-bottom">
+        <button class="toggle-btn" onclick="toggleSidebar()">☰ Menu</button>
+        
+        <!-- Filter Bulan -->
+        <div class="filter-container">
+          <label for="monthFilter">Pilih Bulan:</label>
+          <select id="monthFilter" onchange="updateDashboard()">
+            <option value="JAN">Januari</option>
+            <option value="FEB">Februari</option>
+            <option value="MAR">Maret</option>
+            <option value="APR">April</option>
+            <option value="MAY">Mei</option>
+            <option value="JUN" selected>Juni</option>
+            <option value="JUL">Juli</option>
+          </select>
+        </div>
       </div>
     </header>
 
